@@ -246,13 +246,18 @@ module MkSunmoon
     #=========================================================================
     def compute_sun(div)
       time_val = compute_time_sun(div)
-      time_str = val2hhmmss(time_val * 24.0)
-      jy = (@jd + time_val + @dt / 86400.0 - 2451545.0) / 365.25
-      lambda = compute_lambda_sun(jy)
-      if div == 2
-        angle = compute_height_ecliptic(jy, time_val, lambda, 0.0)
+      if time_val == 0.0
+        time_str = "--:--:--"
+        angle    = "---"
       else
-        angle = compute_angle_ecliptic(jy, time_val, lambda, 0.0)
+        time_str = val2hhmmss(time_val * 24.0)
+        jy = (@jd + time_val + @dt / 86400.0 - 2451545.0) / 365.25
+        lambda = compute_lambda_sun(jy)
+        if div == 2
+          angle = compute_height_ecliptic(jy, time_val, lambda, 0.0)
+        else
+          angle = compute_angle_ecliptic(jy, time_val, lambda, 0.0)
+        end
       end
       return [time_str, angle]
     end
@@ -283,7 +288,7 @@ module MkSunmoon
     end
 
     #=========================================================================
-    # 日の出/日の入/日の南中計算計算
+    # 日の出/日の入/日の南中計算
     #
     # @param:  div  (0: 出, 1: 入, 2: 南中)
     # @return: time (0.xxxx日)
@@ -297,22 +302,27 @@ module MkSunmoon
         lambda = compute_lambda_sun(jy)
         dist   = compute_dist_sun(jy)
         alpha, delta = eclip2equat(jy, lambda, 0.0)
-        r = 0.266994 / dist
-        diff = 0.0024428 / dist
-        height = -1 * r - Const::REFRACTION - @incl + diff
+        unless div == 2  # 南中のときは計算しない
+          r = 0.266994 / dist
+          diff = 0.0024428 / dist
+          height = -1 * r - Const::REFRACTION - @incl + diff
+        end
         time_sidereal = compute_sidereal_time(jy, t)
         hour_angle_diff = compute_hour_angle_diff(
           alpha, delta, time_sidereal, height, div
         )
+        return 0.0 if hour_angle_diff == 0.0
         # 仮定時刻に対する補正値
         rev = hour_angle_diff / 360.0
         t += rev
       end
+      # 日の出・入がない場合は 0 とする
+      t = 0.0 if t < 0.0 || t >= 1.0
       return t
     end
 
     #=========================================================================
-    # 月の出/月の入/月の南中計算計算
+    # 月の出/月の入/月の南中計算
     #
     # @param:  div  (0: 出, 1: 入, 2: 南中)
     # @return: time (0.xxxx日)
@@ -339,7 +349,7 @@ module MkSunmoon
         t += rev
       end
       # 月の出/月の入りがない場合は 0 とする
-      t = 0 if t < 0 || t >= 1
+      t = 0.0 if t < 0.0 || t >= 1.0
       return t
     end
 
@@ -616,33 +626,29 @@ module MkSunmoon
     # @param:  delta(Decl.) (赤緯)
     # @param:  time_sidereal(恒星時Θ(度))
     # @param:  height       (出没高度(度))
-    # @param:  kbn          (0: 出, 1: 入, 2: 南中)
+    # @param:  div          (0: 出, 1: 入, 2: 南中)
     # @return: hour angle difference (時角の差　dt)
     #=========================================================================
-    def compute_hour_angle_diff(alpha, delta, time_sidereal, height, kbn)
-      # 南中の場合は天体の時角を返す
-      if kbn == 2
+    def compute_hour_angle_diff(alpha, delta, time_sidereal, height, div)
+      if div == 2
         tk = 0
       else
         tk  = Math.sin(Const::PI_180 * height)
         tk -= Math.sin(Const::PI_180 * delta) * Math.sin(Const::PI_180 * @lat)
         tk /= Math.cos(Const::PI_180 * delta) * Math.cos(Const::PI_180 * @lat)
         # 出没点の時角
-        tk  = Math.acos(tk) / Const::PI_180
+        return 0.0 if tk.abs > 1
+        tk = Math.acos(tk) / Const::PI_180
         # tkは出のときマイナス、入のときプラス
-        tk = -tk if kbn == 0 && tk > 0
-        tk = -tk if kbn == 1 && tk < 0
+        tk = -tk if div == 0 && tk > 0
+        tk = -tk if div == 1 && tk < 0
       end
       # 天体の時角
       t = time_sidereal - alpha
       dt = tk - t
       # dtの絶対値を180°以下に調整
-      if dt >  180
-        while dt >  180; dt -= 360; end
-      end
-      if dt < -180
-        while dt < -180; dt += 360; end
-      end
+      while dt >  180.0; dt -= 360.0; end
+      while dt < -180.0; dt += 360.0; end
       return dt
     end
 
