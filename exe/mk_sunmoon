@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require "mk_sunmoon"
+
+o = MkSunmoon.new(*ARGV)
+exit unless o
+
+p o.year, o.month, o.day
+p o.lat, o.lon, o.alt
+p o.sunrise
+p o.sunset
+p o.sun_mp
+p o.moonrise
+p o.moonset
+p o.moon_mp
+
