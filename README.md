@@ -37,6 +37,12 @@ require 'mk_sunmoon'
 o = MkSunmoon.new("20160613", 35.47222222, 133.05055556, 0)
 exit unless o
 
+p o.year      # => 2016
+p o.month     # => 6
+p o.day       # => 13
+p o.lat       # => 35.47222222
+p o.lon       # => 133.05055556
+p o.alt       # => 0.0
 p o.sunrise   # => ["04:51:52", 60.3625538738466]
 p o.sunset    # => ["19:23:59", 299.679632987787]
 p o.sun_mp    # => ["12:07:52", 77.75865299128155]
