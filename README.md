@@ -51,6 +51,8 @@ p o.moonset   # => ["00:32:24", 272.8282647107956]
 p o.moon_mp   # => ["18:58:52", 54.1049869601976]
 ```
 
+When latitude and longitude which you set as arguments are formats like `999°99′99.999″`, You must convert degree formats like `999.9999°`. (e.g. 35°28′20″ -> 35.47222222°)
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment. Run `bundle exec mk_sunmoon` to use the gem in this directory, ignoring other installed copies of this gem.
