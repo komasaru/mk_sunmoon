@@ -6,8 +6,8 @@ This is the gem library which calculates rise/set/meridian_passage of Sun and Mo
 
 ### Computable items
 
-Sunrise(time, azimath), Sunset(time, azimath), Sun's meridian passage(time, altitude),
-Moorise(time, azimath), Moonset(time, azimath), Moon's meridian passage(time, altitude),
+Sunrise(time, azimuth), Sunset(time, azimuth), Sun's meridian passage(time, altitude),
+Moorise(time, azimuth), Moonset(time, azimuth), Moon's meridian passage(time, altitude),
 
 ### Original Text
 
@@ -52,6 +52,9 @@ p o.moon_mp   # => ["18:58:52", 54.1049869601976]
 ```
 
 When latitude and longitude which you set as arguments are formats like `999°99′99.999″`, You must convert degree formats like `999.9999°`. (e.g. 35°28′20″ -> 35.47222222°)
+
+If times and azimuth of Sunrise, Sunset are `--:--:--` and `---`, it means that those are "night of the midnight sun" or "polar night".  
+If times of Moonrise, Moonset, Moon Meridian Passase are `--:--:--`, it means that those phenomenons are occurred in the target date.
 
 ## Development
 
