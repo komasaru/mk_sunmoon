@@ -6,7 +6,7 @@ require 'mk_sunmoon/version'
 Gem::Specification.new do |spec|
   spec.name          = "mk_sunmoon"
   spec.version       = MkSunmoon::VERSION
-  spec.authors       = ["Masaru Koizumi"]
+  spec.authors       = ["mk-mode.com"]
   spec.email         = ["masaru@mk-mode.com"]
 
   spec.summary       = %q{Sunrise, Sunset, Moonrise, Moonset library.}
