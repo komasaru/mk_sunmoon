@@ -59,5 +59,9 @@ describe MkSunmoon::Const do
   context "INCLINATION" do
     it { expect(MkSunmoon::Const::INCLINATION).to be_within(1.0e-7).of(0.0353333) }
   end
+
+  context "TT_TAI" do
+    it { expect(MkSunmoon::Const::TT_TAI).to eq 32.184 }
+  end
 end
 

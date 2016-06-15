@@ -15,6 +15,7 @@ module MkSunmoon
     CONVERGE    = 0.00005
     REFRACTION  = 0.585556
     INCLINATION = 0.0353333
+    TT_TAI      = 32.184
   end
 end
 
