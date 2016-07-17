@@ -636,6 +636,14 @@ module MkSunmoon
       val_m = (val_2 * 60).truncate   # (分)計算
       val_3 = val_2 - (val_m / 60.0)  # (秒)計算
       val_s = (val_3 * 60 * 60).round
+      if val_s == 60
+        val_s = 0
+        val_m +=1
+      end
+      if val_m == 60
+        val_m = 0
+        val_h += 1
+      end
       return sprintf("%02d:%02d:%02d", val_h, val_m, val_s)
     end
 
